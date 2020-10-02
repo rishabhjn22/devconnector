@@ -1,18 +1,19 @@
 import {
   REGISTER_SUCCESS,
-  //REGISTER_FAIL,
+  REGISTER_FAIL,
   USER_LOADED,
   AUTH_ERROR,
   LOGIN_SUCCESS,
-  //LOGIN_FAIL,
+  LOGIN_FAIL,
   LOGOUT,
+  ACCOUNT_DELETED,
 } from '../actions/types';
 
 const initialState = {
   token: localStorage.getItem('token'),
   isAuthenticated: null,
   loading: true,
-  user: null
+  user: null,
 };
 
 export default function (state = initialState, action) {
@@ -24,31 +25,28 @@ export default function (state = initialState, action) {
         ...state,
         isAuthenticated: true,
         loading: false,
-        user: payload
+        user: payload,
       };
     case REGISTER_SUCCESS:
-      return {
-        ...state,
-        ...payload,
-        isAuthenticated: true,
-        loading: false
-      };
     case LOGIN_SUCCESS:
       return {
         ...state,
         ...payload,
         isAuthenticated: true,
-        loading: false
+        loading: false,
       };
 
+    case REGISTER_FAIL:
     case AUTH_ERROR:
+    case LOGIN_FAIL:
     case LOGOUT:
+    case ACCOUNT_DELETED:
       return {
         ...state,
         token: null,
         isAuthenticated: false,
         loading: false,
-        user: null
+        user: null,
       };
     default:
       return state;
