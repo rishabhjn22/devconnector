@@ -9,6 +9,7 @@ import {
   CLEAR_PROFILE,
   ACCOUNT_DELETED,
   GET_REPOS,
+  NO_REPOS,
 } from './types';
 
 // Get current users profile
@@ -21,6 +22,9 @@ export const getCurrentProfile = () => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
+    dispatch({
+      type: CLEAR_PROFILE,
+    });
     dispatch({
       type: PROFILE_ERROR,
       payload: { msg: err.response.statusText, status: err.response.status },
@@ -50,7 +54,7 @@ export const getProfiles = () => async (dispatch) => {
 export const getProfileById = (userId) => async (dispatch) => {
   dispatch({ type: CLEAR_PROFILE });
   try {
-    const res = await api.get(`/profile/user/$(userId)`);
+    const res = await api.get(`/profile/user/${userId}`);
 
     dispatch({
       type: GET_PROFILE,
@@ -75,8 +79,7 @@ export const getGithubRepos = (username) => async (dispatch) => {
     });
   } catch (err) {
     dispatch({
-      type: PROFILE_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status },
+      type: NO_REPOS,
     });
   }
 };
@@ -222,7 +225,7 @@ export const deleteEducation = (id) => async (dispatch) => {
 export const deleteAccount = () => async (dispatch) => {
   if (window.confirm('Are you sure? This can not be undone!')) {
     try {
-      const res = await api.delete('/profile');
+      await api.delete('/profile');
       dispatch({ type: CLEAR_PROFILE });
       dispatch({ type: ACCOUNT_DELETED });
 
